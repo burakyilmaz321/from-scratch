@@ -5,9 +5,7 @@ import matplotlib.pyplot as plt
 # Import data
 df = pd.read_csv('data/housing.csv')
 
-X, y = df.GrLiveArea, df.SalePrice
-
-# Predict Insurance.
+X, y = df.GrLivArea, df.SalePrice
 
 # Calculate Mean and Variance.
 def mean(series):
@@ -37,7 +35,7 @@ def prediction(X, coefficients):
 	beta_0, beta_1 = coefficients
 	return [beta_0 + beta_1 * x for x in X]
 
-y_hat = prediction(X, coefficients(X, Y))
+y_hat = prediction(X, coefficients(X, y))
 
 # Evaluate with r^2
 def rsqr(Y, y_hat):
@@ -47,8 +45,6 @@ def rsqr(Y, y_hat):
 	return 1 - ss_res/ss_tot
 
 # Plot
-plt.scatter(X, Y)
+plt.scatter(X, y)
 plt.plot(X, y_hat)
 plt.show()
-
-# Summary
