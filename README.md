@@ -1,6 +1,6 @@
 ### From Scratch
 
-Machine Learning algorithms from scratch.
+Algorithms from scratch.
 
 - Linear Regression
 - KMeans
