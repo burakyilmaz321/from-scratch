@@ -1,9 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[]) 
 {
     if (argc == 2)
     {
+        if (atoi(argv[1]) == 0)
+        {
+            printf("Pass a non-zero integer!\n");
+        }
+        
         int a, b, c;
 
         a = 0;
@@ -15,7 +21,7 @@ int main(int argc, char *argv[])
             c = a + b;
             a = b;
             b = c;
-        } while (a < 255);
+        } while (a < atoi(argv[1]));
     }
     else if (argc > 2)
     {
@@ -23,6 +29,6 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Only one argument expected!\n");
+        printf("Give one argument!\n");
     }
 }
