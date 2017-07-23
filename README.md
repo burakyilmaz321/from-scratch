@@ -2,8 +2,9 @@
 
 Algorithms from scratch.
 
-- [Linear Regression](https://en.wikipedia.org/wiki/Linear_regression)
-- [Logistic Regression](https://en.wikipedia.org/wiki/Logistic_regression)
-- [KMeans](https://en.wikipedia.org/wiki/K-means_clustering)
-- [Gradient Descent](https://en.wikipedia.org/wiki/Gradient_descent)
-- [Fibonacci Numbers](https://en.wikipedia.org/wiki/Fibonacci_number)
+- *simple_linear_regression.py* | [Linear Regression](https://en.wikipedia.org/wiki/Linear_regression)
+- *logistic_regression.py* | [Logistic Regression](https://en.wikipedia.org/wiki/Logistic_regression)
+- *kmeans.py* | [KMeans](https://en.wikipedia.org/wiki/K-means_clustering)
+- *gradient_descent.py* | [Gradient Descent](https://en.wikipedia.org/wiki/Gradient_descent)
+- *fib.py, fib.c* |[Fibonacci Numbers](https://en.wikipedia.org/wiki/Fibonacci_number)
+- *linreg.py* | 2-Layer Neural Network (linear regression)
