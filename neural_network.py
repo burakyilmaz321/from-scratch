@@ -1,5 +1,5 @@
 '''
-Linear regression with a single percceptron network
+Basic neural network. Single layer perceptron.
 '''
 import numpy as np
 
