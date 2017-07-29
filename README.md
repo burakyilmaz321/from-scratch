@@ -7,4 +7,4 @@ Algorithms from scratch.
 - *kmeans.py* | [KMeans](https://en.wikipedia.org/wiki/K-means_clustering)
 - *gradient_descent.py* | [Gradient Descent](https://en.wikipedia.org/wiki/Gradient_descent)
 - *fib.py, fib.c* |[Fibonacci Numbers](https://en.wikipedia.org/wiki/Fibonacci_number)
-- *linreg.py* | 2-Layer Neural Network (linear regression)
+- *neural_network.py* | [Single Layer Perceptron Neural Network](https://en.wikipedia.org/wiki/Artificial_neural_network)
