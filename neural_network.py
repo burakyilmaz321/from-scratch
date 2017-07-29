@@ -21,11 +21,11 @@ def train(x, w, y, epoch):
         a, e = feedforward(x, w, y)
         if _ % (epoch / 10) == 0:
             print('epoch ' + str(_))
-            print('    Error: {:.4f}'.format(e))
+            print('    Error:  {:.4f}'.format(e))
             print('    Output: {:.4f}'.format(a))
             print('')
         w = backprop(a, w, y)
     
-    print('Final error: {:.4f}'.format(e))
+    print('Final error:  {:.4f}'.format(e))
     print('Final weight: {:.4f}'.format(w))
     print('Final output: {:.4f}'.format(a))
