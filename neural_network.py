@@ -11,21 +11,23 @@ def feedforward(x, w, y):
     e = (y - a)**2 / 2
     return (a, e)
     
-def backprop(a, w, y):
+def backprop(a, x, w, y):
     delta = (a - y) * a * (1 - a)
-    w_updated = w - delta
+    w_updated = w - (delta * x)
     return w_updated
 
 def train(x, w, y, epoch):
     for _ in range(epoch):
         a, e = feedforward(x, w, y)
+        w = backprop(a, x, w, y)
         if _ % (epoch / 10) == 0:
-            print('epoch ' + str(_))
-            print('    Error:  {:.4f}'.format(e))
+            print('-> epoch #' + str(_))
+            print('    Error : {:.4f}'.format(e))
             print('    Output: {:.4f}'.format(a))
+            print('    Weight: {:.4f}'.format(w))
             print('')
-        w = backprop(a, w, y)
     
-    print('Final error:  {:.4f}'.format(e))
-    print('Final weight: {:.4f}'.format(w))
+    print('Final error : {:.4f}'.format(e))
     print('Final output: {:.4f}'.format(a))
+    print('Final weight: {:.4f}'.format(w))
+
