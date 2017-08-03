@@ -18,6 +18,13 @@ iris[Species == 'versicolor', y := 0]
 a1 <- as.matrix(cbind(rep(1, n), iris[, 7:10]))
 y <- as.matrix(iris[, y])
 
+# Split train/test
+test_x <- rbind(a1[41:50], a1[91:100])
+a1 <- rbind(a1[1:40], a1[51:90])
+
+test_y <- rbind(y[41:50], y[91:100])
+y <- rbind(y[1:40], y[51:90])
+
 # Parameters
 HIDDEN_UNITS <- 4
 INPUT_UNITS <- dim(a1)[2]
@@ -41,3 +48,6 @@ for (i in 1:100000) {
   e <- (y - a3)**2 / (2 * N)
 }
 
+# Test network
+pred <- sigm(sigm(test_x %*% w1) %*% w2)
+test_error <- mean((test_y - pred)**2 / nrow(test_y)) 
