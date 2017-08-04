@@ -15,15 +15,15 @@ iris[Species == 'setosa', y := 1]
 iris[Species == 'versicolor', y := 0]
 
 # Prepare data
-a1 <- as.matrix(cbind(rep(1, n), iris[, 7:10]))
+a1 <- as.matrix(cbind(rep(1, nrow(iris)), iris[, 6:9]))
 y <- as.matrix(iris[, y])
 
 # Split train/test
-test_x <- rbind(a1[41:50], a1[91:100])
-a1 <- rbind(a1[1:40], a1[51:90])
+test_x <- rbind(a1[41:50,], a1[91:100,])
+a1 <- rbind(a1[1:40,], a1[51:90,])
 
-test_y <- rbind(y[41:50], y[91:100])
-y <- rbind(y[1:40], y[51:90])
+test_y <- as.matrix(c(y[41:50,], y[91:100,]))
+y <- as.matrix(c(y[1:40,], y[51:90,]))
 
 # Parameters
 HIDDEN_UNITS <- 4
