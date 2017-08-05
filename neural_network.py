@@ -26,9 +26,15 @@ class ActivationFunctions(object):
         return np.vectorize(f)(x)
 
 class NeuralNetwork(object):
+    
+    activations = {
+        'sigm': (ActivationFunctions.sigm, ActivationFunctions.sigm_d),
+        'relu': (ActivationFunctions.relu, ActivationFunctions.relu_d)
+    }
 
-    def __init__(self, hidden_unit, alpha):
+    def __init__(self, hidden_unit, activation, alpha):
         self.hidden_unit = hidden_unit
+        self.activation = activation    
         self.alpha = alpha
 
     def report(self, x, y, e, epoch, iter):
@@ -39,14 +45,14 @@ class NeuralNetwork(object):
             print('')
 
     def feedforward(self, a1, w1, w2, y):
-        a2 = ActivationFunctions.relu(np.dot(a1, w1))
-        a3 = ActivationFunctions.sigm(np.dot(a2, w2))
+        a2 = self.activations[self.activation][0](np.dot(a1, w1))
+        a3 = self.activations['sigm'][0](np.dot(a2, w2))
         e = (y - a3)**2 / 2
         return (a2, a3, e)
         
     def backprop(self, a1, a2, a3, w1, w2, y):
-        delta2 = (a3 - y) * ActivationFunctions.sigm_d(a3)
-        delta1 = np.dot(delta2, w2.T) * ActivationFunctions.relu_d(a2)
+        delta2 = (a3 - y) * self.activations['sigm'][1](a3)
+        delta1 = np.dot(delta2, w2.T) * self.activations[self.activation][1](a2)
         w2 -= self.alpha * np.dot(a2.T, delta2)
         w1 -= self.alpha * np.dot(a1.T, delta1)
         return w1, w2
@@ -74,7 +80,7 @@ def main():
     '''
     X = np.array([0,0,1,1,0,1,0,1,1,1,1,1]).reshape((4, 3))
     y = np.array([0, 1, 1, 0]).reshape((4, 1))
-    net = NeuralNetwork(5, 0.5)
+    net = NeuralNetwork(5, 'sigm', 0.5)
     net.fit(X, y, 1000)
 
 if __name__ == "__main__":
