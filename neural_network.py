@@ -4,6 +4,7 @@ a1: input matrix
 a2: hidden layer
 a3: output
 '''
+
 import numpy as np
 
 class ActivationFunctions(object):
@@ -25,6 +26,12 @@ class ActivationFunctions(object):
         return np.vectorize(f)(x)
 
 class NeuralNetwork(object):
+    '''
+    Description: 3-Layer perceptron class. 
+    Topology: A tuple. (#of input units, #of hidden units)
+    Activation: 'sigm' or 'relu'
+    Alpha: learning rate between 0 and 1
+    '''
     activations = {
         'sigm': (ActivationFunctions.sigm, ActivationFunctions.sigm_d),
         'relu': (ActivationFunctions.relu, ActivationFunctions.relu_d)
@@ -56,6 +63,10 @@ class NeuralNetwork(object):
         return w1, w2
 
     def fit(self, X, y, epoch, silent=False):
+        '''
+        X, y: numpy 1-D array. Will be reshaped according to the network topology
+        '''        
+        
         n = len(X) // self.topology[0]
         # Input space
         X = np.append(X, [1] * n)
