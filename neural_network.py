@@ -14,6 +14,17 @@ class ActivationFunctions(object):
     def sigm_d(x):
         return x * (1 - x)
 
+    def relu(x):
+        return np.maximum(0, x)
+    
+    def relu_d(x):
+        def f(x):
+            if x > 0:
+                return 1
+            else:
+                return 0
+        return np.vectorize(f)(x)
+
 class NeuralNetwork(object):
 
     def __init__(self, hidden_unit, alpha):
@@ -28,14 +39,14 @@ class NeuralNetwork(object):
             print('')
 
     def feedforward(self, a1, w1, w2, y):
-        a2 = ActivationFunctions.sigm(np.dot(a1, w1))
+        a2 = ActivationFunctions.relu(np.dot(a1, w1))
         a3 = ActivationFunctions.sigm(np.dot(a2, w2))
         e = (y - a3)**2 / 2
         return (a2, a3, e)
         
     def backprop(self, a1, a2, a3, w1, w2, y):
         delta2 = (a3 - y) * ActivationFunctions.sigm_d(a3)
-        delta1 = np.dot(delta2, w2.T) * ActivationFunctions.sigm_d(a2)
+        delta1 = np.dot(delta2, w2.T) * ActivationFunctions.relu_d(a2)
         w2 -= self.alpha * np.dot(a2.T, delta2)
         w1 -= self.alpha * np.dot(a1.T, delta1)
         return w1, w2
@@ -54,6 +65,13 @@ class NeuralNetwork(object):
         print('Final output: ', [i for i in zip(a3.flatten(), y.flatten())])
 
 def main():
+    '''
+    Main function should initialize input space, output space and the network
+    Input and output should be numpy arrays.
+    Network instance must be initialized with topology, learning rate, activation function 
+    To train the network, input and output arrays must be passed as an argument 
+    as well as the desired number of training epochs
+    '''
     X = np.array([0,0,1,1,0,1,0,1,1,1,1,1]).reshape((4, 3))
     y = np.array([0, 1, 1, 0]).reshape((4, 1))
     net = NeuralNetwork(5, 0.5)
