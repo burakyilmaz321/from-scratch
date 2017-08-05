@@ -6,34 +6,36 @@ a3: output
 '''
 import numpy as np
 
+class ActivationFunctions(object):
+    
+    def sigm(x):
+        return 1 / (1 + np.exp(-x))
+
+    def sigm_d(x):
+        return x * (1 - x)
+
 class NeuralNetwork(object):
 
     def __init__(self, hidden_unit, alpha):
         self.hidden_unit = hidden_unit
         self.alpha = alpha
 
-    def sigm(self, x):
-        return 1 / (1 + np.exp(-x))
-
-    def sigm_d(self, x):
-        return x * (1 - x)
-
     def report(self, x, y, e, epoch, iter):
         if iter % (epoch / 10) == 0:
-                        print('-> epoch #' + str(iter))
-                        print('    Error : {:.4f}'.format(np.mean(e)))
-                        print('    Output: ', [i for i in zip(x.flatten(), y.flatten())])
-                        print('')
+            print('-> epoch #' + str(iter))
+            print('    Error : {:.4f}'.format(np.mean(e)))
+            print('    Output: ', [i for i in zip(x.flatten(), y.flatten())])
+            print('')
 
     def feedforward(self, a1, w1, w2, y):
-        a2 = self.sigm(np.dot(a1, w1))
-        a3 = self.sigm(np.dot(a2, w2))
+        a2 = ActivationFunctions.sigm(np.dot(a1, w1))
+        a3 = ActivationFunctions.sigm(np.dot(a2, w2))
         e = (y - a3)**2 / 2
         return (a2, a3, e)
         
     def backprop(self, a1, a2, a3, w1, w2, y):
-        delta2 = (a3 - y) * self.sigm_d(a3)
-        delta1 = np.dot(delta2, w2.T) * self.sigm_d(a2)
+        delta2 = (a3 - y) * ActivationFunctions.sigm_d(a3)
+        delta1 = np.dot(delta2, w2.T) * ActivationFunctions.sigm_d(a2)
         w2 -= self.alpha * np.dot(a2.T, delta2)
         w1 -= self.alpha * np.dot(a1.T, delta1)
         return w1, w2
