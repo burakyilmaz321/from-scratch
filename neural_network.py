@@ -7,7 +7,6 @@ a3: output
 import numpy as np
 
 class ActivationFunctions(object):
-    
     def sigm(x):
         return 1 / (1 + np.exp(-x))
 
@@ -26,14 +25,13 @@ class ActivationFunctions(object):
         return np.vectorize(f)(x)
 
 class NeuralNetwork(object):
-    
     activations = {
         'sigm': (ActivationFunctions.sigm, ActivationFunctions.sigm_d),
         'relu': (ActivationFunctions.relu, ActivationFunctions.relu_d)
     }
 
-    def __init__(self, hidden_unit, activation, alpha):
-        self.hidden_unit = hidden_unit
+    def __init__(self, topology, activation, alpha):
+        self.topology = topology
         self.activation = activation    
         self.alpha = alpha
 
@@ -57,10 +55,17 @@ class NeuralNetwork(object):
         w1 -= self.alpha * np.dot(a1.T, delta1)
         return w1, w2
 
-    def fit(self, a1, y, epoch, silent=False):
-        input_unit = a1.shape[1]
-        w1 = np.random.random((input_unit, self.hidden_unit))
-        w2 = np.random.random((self.hidden_unit, 1))
+    def fit(self, X, y, epoch, silent=False):
+        n = len(X) // self.topology[0]
+        # Input space
+        X = np.append(X, [1] * n)
+        a1 = X.reshape((n, self.topology[0] + 1))
+        # Output space
+        y = y.reshape((n, 1))
+        # Weight space
+        w1 = np.random.random((self.topology[0] + 1, self.topology[1]))
+        w2 = np.random.random((self.topology[1], 1))
+        # Train
         for _ in range(epoch):
             a2, a3, e = self.feedforward(a1, w1, w2, y)
             w1, w2 = self.backprop(a1, a2, a3, w1, w2, y)
@@ -78,9 +83,10 @@ def main():
     To train the network, input and output arrays must be passed as an argument 
     as well as the desired number of training epochs
     '''
-    X = np.array([0,0,1,1,0,1,0,1,1,1,1,1]).reshape((4, 3))
-    y = np.array([0, 1, 1, 0]).reshape((4, 1))
-    net = NeuralNetwork(5, 'sigm', 0.5)
+    X = np.array([0,0,1,1,0,1,0,1])
+    y = np.array([0, 1, 1, 0])
+    network_topology = (2, 4)
+    net = NeuralNetwork(network_topology, 'sigm', 0.5)
     net.fit(X, y, 1000)
 
 if __name__ == "__main__":
