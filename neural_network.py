@@ -37,6 +37,10 @@ class NeuralNetwork(object):
         'relu': (ActivationFunctions.relu, ActivationFunctions.relu_d)
     }
 
+    errors = []
+
+    predictions = None
+    
     def __init__(self, topology, activation, alpha):
         self.topology = topology
         self.activation = activation    
@@ -62,6 +66,12 @@ class NeuralNetwork(object):
         w1 -= self.alpha * np.dot(a1.T, delta1)
         return w1, w2
 
+    def getErrors(self):
+        return self.errors
+
+    def getPredictions(self):
+        return self.predictions
+
     def fit(self, X, y, epoch, silent=False):
         '''
         X, y: numpy 1-D array. Will be reshaped according to the network topology
@@ -80,11 +90,14 @@ class NeuralNetwork(object):
         for _ in range(epoch):
             a2, a3, e = self.feedforward(a1, w1, w2, y)
             w1, w2 = self.backprop(a1, a2, a3, w1, w2, y)
+            self.errors.append(np.mean(e))
             if not silent: 
                 self.report(a3, y, e, epoch, _)
 
         print('Final error : {:.4f}'.format(np.mean(e)))
         #print('Final output: ', [i for i in zip(a3.flatten(), y.flatten())])
+        classify = lambda x: 1 if x >= .5 else 0
+        self.predictions = np.apply_along_axis(classify, 1, a3)
 
 def main():
     '''
