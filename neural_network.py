@@ -46,7 +46,7 @@ class NeuralNetwork(object):
         if iter % (epoch / 10) == 0:
             print('-> epoch #' + str(iter))
             print('    Error : {:.4f}'.format(np.mean(e)))
-            print('    Output: ', [i for i in zip(x.flatten(), y.flatten())])
+            #print('    Output: ', [i for i in zip(x.flatten(), y.flatten())])
             print('')
 
     def feedforward(self, a1, w1, w2, y):
@@ -70,9 +70,9 @@ class NeuralNetwork(object):
         n = len(X) // self.topology[0]
         # Input space
         X = np.append(X, [1] * n)
-        a1 = X.reshape((n, self.topology[0] + 1))
+        a1 = X.reshape((n, self.topology[0] + 1), order='F')
         # Output space
-        y = y.reshape((n, 1))
+        y = y.reshape((n, 1), order='F')
         # Weight space
         w1 = np.random.random((self.topology[0] + 1, self.topology[1]))
         w2 = np.random.random((self.topology[1], 1))
@@ -84,7 +84,7 @@ class NeuralNetwork(object):
                 self.report(a3, y, e, epoch, _)
 
         print('Final error : {:.4f}'.format(np.mean(e)))
-        print('Final output: ', [i for i in zip(a3.flatten(), y.flatten())])
+        #print('Final output: ', [i for i in zip(a3.flatten(), y.flatten())])
 
 def main():
     '''
