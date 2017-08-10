@@ -82,10 +82,10 @@ class NeuralNetwork(object):
         X = np.append(X, [1] * n)
         a1 = X.reshape((n, self.topology[0] + 1), order='F')
         # Output space
-        y = y.reshape((n, 1), order='F')
+        y = y.reshape((n, self.topology[2]), order='F')
         # Weight space
         w1 = np.random.random((self.topology[0] + 1, self.topology[1]))
-        w2 = np.random.random((self.topology[1], 1))
+        w2 = np.random.random((self.topology[1], self.topology[2]))
         # Train
         for _ in range(epoch):
             a2, a3, e = self.feedforward(a1, w1, w2, y)
@@ -96,8 +96,10 @@ class NeuralNetwork(object):
 
         print('Final error : {:.4f}'.format(np.mean(e)))
         #print('Final output: ', [i for i in zip(a3.flatten(), y.flatten())])
-        classify = lambda x: 1 if x >= .5 else 0
-        self.predictions = np.apply_along_axis(classify, 1, a3)
+        print('Final probs: \n', a3)
+        print('Final preds: \n', np.round(a3))
+        #classify = lambda x: 1 if x >= .5 else 0
+        #self.predictions = np.apply_along_axis(classify, 1, a3)
 
 def main():
     '''
@@ -108,8 +110,8 @@ def main():
     as well as the desired number of training epochs
     '''
     X = np.array([0,0,1,1,0,1,0,1])
-    y = np.array([0, 1, 1, 0])
-    network_topology = (2, 4)
+    y = np.array([0, 1, 1, 0, 1, 0, 0, 1])
+    network_topology = [2, 4, 2]
     net = NeuralNetwork(network_topology, 'sigm', 0.5)
     net.fit(X, y, 1000)
 
