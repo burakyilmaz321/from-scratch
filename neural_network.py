@@ -73,16 +73,19 @@ class NeuralNetwork(object):
         '''
         X, y: numpy 1-D array. Will be reshaped according to the network topology
         '''        
-        
         n = len(X) // self.topology[0]
+
         # Input space
         X = np.append(X, [1] * n)
         a1 = X.reshape((n, self.topology[0] + 1), order='F')
+
         # Output space
         y = y.reshape((n, self.topology[2]), order='F')
+
         # Weight space
         w1 = np.random.random((self.topology[0] + 1, self.topology[1]))
         w2 = np.random.random((self.topology[1], self.topology[2]))
+
         # Train
         for _ in range(epoch):
             a2, a3, e = self.feedforward(a1, w1, w2, y)
@@ -100,7 +103,7 @@ class NeuralNetwork(object):
 
 def main():
     '''
-    Main function should initialize input space, output space and the network
+    Main function initializes the input space, the output space and the network
     Input and output should be numpy arrays.
     Network instance must be initialized with topology, learning rate, activation function 
     To train the network, input and output arrays must be passed as an argument 
