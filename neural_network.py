@@ -1,8 +1,5 @@
 '''
 Basic 3-layer neural network implementation. 
-a1: input matrix
-a2: hidden layer
-a3: output
 '''
 
 import numpy as np
@@ -28,7 +25,7 @@ class ActivationFunctions(object):
 class NeuralNetwork(object):
     '''
     Description: 3-Layer perceptron class. 
-    Topology: A tuple. (#of input units, #of hidden units)
+    Topology: [#of input units, #of hidden units, #of output units]
     Activation: 'sigm' or 'relu'
     Alpha: learning rate between 0 and 1
     '''
