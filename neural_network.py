@@ -50,18 +50,21 @@ class NeuralNetwork(object):
             #print('    Output: ', [i for i in zip(x.flatten(), y.flatten())])
             print('')
 
-    def feedforward(self, a1, w1, w2, y):
+    def feedforward(self, a1, w1, w2, w3, y):
         a2 = self.activations[self.activation][0](np.dot(a1, w1))
-        a3 = self.activations['sigm'][0](np.dot(a2, w2))
-        e = (y - a3)**2 / 2
-        return (a2, a3, e)
+        a3 = self.activations[self.activation][0](np.dot(a2, w2))
+        a4 = self.activations['sigm'][0](np.dot(a3, w3))
+        e = (y - a4)**2 / 2
+        return (a2, a3, a4, e)
         
-    def backprop(self, a1, a2, a3, w1, w2, y):
-        delta2 = (a3 - y) * self.activations['sigm'][1](a3)
+    def backprop(self, a1, a2, a3, a4, w1, w2, w3, y):
+        delta3 = (a4 - y) * self.activations['sigm'][1](a4)
+        delta2 = np.dot(delta3, w3.T) * self.activations[self.activation][1](a3)
         delta1 = np.dot(delta2, w2.T) * self.activations[self.activation][1](a2)
+        w3 -= self.alpha * np.dot(a3.T, delta3)
         w2 -= self.alpha * np.dot(a2.T, delta2)
         w1 -= self.alpha * np.dot(a1.T, delta1)
-        return w1, w2
+        return w1, w2, w3
 
     def getErrors(self):
         return self.errors
@@ -80,24 +83,25 @@ class NeuralNetwork(object):
         a1 = X.reshape((n, self.topology[0] + 1), order='F')
 
         # Output space
-        y = y.reshape((n, self.topology[2]), order='F')
+        y = y.reshape((n, self.topology[3]), order='F')
 
         # Weight space
         w1 = np.random.random((self.topology[0] + 1, self.topology[1]))
         w2 = np.random.random((self.topology[1], self.topology[2]))
+        w3 = np.random.random((self.topology[2], self.topology[3]))
 
         # Train
         for _ in range(epoch):
-            a2, a3, e = self.feedforward(a1, w1, w2, y)
-            w1, w2 = self.backprop(a1, a2, a3, w1, w2, y)
+            a2, a3, a4, e = self.feedforward(a1, w1, w2, w3, y)
+            w1, w2, w3 = self.backprop(a1, a2, a3, a4, w1, w2, w3, y)
             self.errors.append(np.mean(e))
             if not silent: 
-                self.report(a3, y, e, epoch, _)
+                self.report(a4, y, e, epoch, _)
 
         print('Final error : {:.4f}'.format(np.mean(e)))
         #print('Final output: ', [i for i in zip(a3.flatten(), y.flatten())])
-        print('Final probs: \n', a3)
-        print('Final preds: \n', np.round(a3))
+        print('Final probs: \n', a4)
+        print('Final preds: \n', np.round(a4))
         #classify = lambda x: 1 if x >= .5 else 0
         #self.predictions = np.apply_along_axis(classify, 1, a3)
 
@@ -111,7 +115,7 @@ def main():
     '''
     X = np.array([0,0,1,1,0,1,0,1])
     y = np.array([0, 1, 1, 0, 1, 0, 0, 1])
-    network_topology = [2, 4, 2]
+    network_topology = [2, 4, 3, 2]
     net = NeuralNetwork(network_topology, 'sigm', 0.5)
     net.fit(X, y, 1000)
 
