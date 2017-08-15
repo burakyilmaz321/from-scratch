@@ -65,9 +65,8 @@ class NeuralNetwork(object):
 
     predictions = None
 
-    def __init__(self, topology, activation, alpha):
+    def __init__(self, topology, alpha):
         self.topology = topology
-        self.activation = activation
         self.alpha = alpha
 
     def report(self, x, y, e, epoch, iter):
@@ -78,16 +77,16 @@ class NeuralNetwork(object):
             print('')
 
     def feedforward(self, a1, w1, w2, w3, y):
-        a2 = self.activations[self.activation][0](np.dot(a1, w1))
-        a3 = self.activations[self.activation][0](np.dot(a2, w2))
-        a4 = self.activations['sigm'][0](np.dot(a3, w3))
+        a2 = self.activations[self.topology[1]['activation']][0](np.dot(a1, w1))
+        a3 = self.activations[self.topology[2]['activation']][0](np.dot(a2, w2))
+        a4 = self.activations[self.topology[3]['activation']][0](np.dot(a3, w3))
         e = (y - a4)**2 / 2
         return (a2, a3, a4, e)
 
     def backprop(self, a1, a2, a3, a4, w1, w2, w3, y):
-        delta3 = (a4 - y) * self.activations['sigm'][1](a4)
-        delta2 = np.dot(delta3, w3.T) * self.activations[self.activation][1](a3)
-        delta1 = np.dot(delta2, w2.T) * self.activations[self.activation][1](a2)
+        delta3 = (a4 - y) * self.activations[self.topology[3]['activation']][1](a4)
+        delta2 = np.dot(delta3, w3.T) * self.activations[self.topology[2]['activation']][1](a3)
+        delta1 = np.dot(delta2, w2.T) * self.activations[self.topology[1]['activation']][1](a2)
         w3 -= self.alpha * np.dot(a3.T, delta3)
         w2 -= self.alpha * np.dot(a2.T, delta2)
         w1 -= self.alpha * np.dot(a1.T, delta1)
@@ -103,19 +102,19 @@ class NeuralNetwork(object):
         '''
         X, y: numpy 1-D array. Will be reshaped according to the network topology
         '''
-        n = len(X) // self.topology[0]
+        n = len(X) // self.topology[0]['units']
 
         # Input space
         X = np.append(X, [1] * n)
-        a1 = X.reshape((n, self.topology[0] + 1), order='F')
+        a1 = X.reshape((n, self.topology[0]['units'] + 1), order='F')
 
         # Output space
-        y = y.reshape((n, self.topology[3]), order='F')
+        y = y.reshape((n, self.topology[3]['units']), order='F')
 
         # Weight space
-        w1 = np.random.random((self.topology[0] + 1, self.topology[1]))
-        w2 = np.random.random((self.topology[1], self.topology[2]))
-        w3 = np.random.random((self.topology[2], self.topology[3]))
+        w1 = np.random.random((self.topology[0]['units'] + 1, self.topology[1]['units']))
+        w2 = np.random.random((self.topology[1]['units'], self.topology[2]['units']))
+        w3 = np.random.random((self.topology[2]['units'], self.topology[3]['units']))
 
         # Train
         for _ in range(epoch):
@@ -142,8 +141,11 @@ def main():
     '''
     X = np.array([0,0,1,1,0,1,0,1])
     y = np.array([0, 1, 1, 0, 1, 0, 0, 1])
-    network_topology = [2, 4, 3, 2]
-    net = NeuralNetwork(network_topology, 'sigm', 0.5)
+    network_topology = [{'units': 2},
+                        {'units': 4, 'activation': 'sigm'},
+                        {'units': 3, 'activation': 'sigm'},
+                        {'units': 2, 'activation': 'sigm'}]
+    net = NeuralNetwork(network_topology, 0.5)
     net.fit(X, y, 1000)
 
 if __name__ == "__main__":
